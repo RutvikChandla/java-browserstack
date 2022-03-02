@@ -7,6 +7,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.JavascriptExecutor;
 import java.net.URL;
+import java.time.Duration;
 import java.util.HashMap;
 
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -14,18 +15,21 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import com.browserstack.local.Local;
 
 public class JavaLocalSample {
-  public static final String AUTOMATE_USERNAME = "";
-  public static final String AUTOMATE_ACCESS_KEY = "";
+  public static final String AUTOMATE_USERNAME = "rutvikchandla_2MEern";
+  public static final String AUTOMATE_ACCESS_KEY = "AXHzyg34Qr81Nep231pu";
 public static final String URL = "https://" + AUTOMATE_USERNAME + ":" + AUTOMATE_ACCESS_KEY + "@hub-cloud.browserstack.com/wd/hub";
 public static void main(String[] args) throws Exception {
- DesiredCapabilities caps = new DesiredCapabilities();
- caps.setCapability("os", "OS X");
- caps.setCapability("os_version", "Sierra");
- caps.setCapability("browser", "Safari");
- caps.setCapability("browser_version", "10.0");
- caps.setCapability("browserstack.local", "true");
- caps.setCapability("name", "BStack-[Java] Sample Local Test"); // test name
- caps.setCapability("build", "BStack Build Number 1"); // CI/CD job or build name
+	DesiredCapabilities capabilities = new DesiredCapabilities();
+	capabilities.setCapability("browserName", "Chrome");
+	capabilities.setCapability("browserVersion", "latest");
+	HashMap<String, Object> browserstackOptions = new HashMap<String, Object>();
+	browserstackOptions.put("os", "OS X");
+	browserstackOptions.put("osVersion", "Sierra");
+	browserstackOptions.put("local", "true");
+	browserstackOptions.put("seleniumVersion", "4.0.0");
+	capabilities.setCapability("bstack:options", browserstackOptions);
+	capabilities.setCapability("sessionName", "BStack-[Java] Sample Test"); // test name
+	capabilities.setCapability("buildName", "BStack Local Build Number 1"); // CI/CD job or build name
  
 //Creates an instance of Local
 Local bsLocal = new Local();
@@ -40,10 +44,10 @@ bsLocal.start(bsLocalArgs);
 // Check if BrowserStack local instance is running
 System.out.println(bsLocal.isRunning());
 
- final WebDriver driver = new RemoteWebDriver(new URL(URL), caps);
+ final WebDriver driver = new RemoteWebDriver(new URL(URL), capabilities);
  try {
    driver.get("http://bs-local.com:45691/check");
-   final WebDriverWait wait = new WebDriverWait(driver, 10);
+   final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
    // getting name of the product
    String bodyText = wait.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("body"))).getText();
    

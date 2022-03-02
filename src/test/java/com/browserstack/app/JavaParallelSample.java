@@ -2,9 +2,8 @@ package com.browserstack.app;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Set;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -16,67 +15,48 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 class DeviceOne implements Runnable {
 	public void run() {
 		Hashtable<String, String> capsHashtable = new Hashtable<String, String>();
-		capsHashtable.put("device", "iPhone 12 Pro");
-		capsHashtable.put("real_mobile", "true");
-		capsHashtable.put("build", "BStack-[Java] Sample Build");
-		capsHashtable.put("name", "Thread 1");
+		capsHashtable.put("deviceName", "iPhone 12 Pro");
+		capsHashtable.put("realMobile", "true");
 		JavaParallelSample deviceOne = new JavaParallelSample();
-		deviceOne.executeTest(capsHashtable);
+		deviceOne.executeTest(capsHashtable, "Thread 1");
 	}
 }
 class DeviceTwo implements Runnable {
 	public void run() {
 		Hashtable<String, String> capsHashtable = new Hashtable<String, String>();
-		capsHashtable.put("device", "Samsung Galaxy S20");
-		capsHashtable.put("real_mobile", "true");
-		capsHashtable.put("build", "BStack-[Java] Sample Build");
-		capsHashtable.put("name", "Thread 2");
+		capsHashtable.put("deviceName", "Samsung Galaxy S20");
+		capsHashtable.put("realMobile", "true");
 		JavaParallelSample deviceTwo = new JavaParallelSample();
-		deviceTwo.executeTest(capsHashtable);
+		deviceTwo.executeTest(capsHashtable, "Thread 2");
 	}
 }
 class DeviceThree implements Runnable {
 	public void run() {
 		Hashtable<String, String> capsHashtable = new Hashtable<String, String>();
-		capsHashtable.put("browser", "safari");
-		capsHashtable.put("browser_version", "14");
 		capsHashtable.put("os", "OS X");
-		capsHashtable.put("os_version", "Big Sur");
-		capsHashtable.put("build", "BStack-[Java] Sample Build");
-		capsHashtable.put("name", "Thread 3");
 		JavaParallelSample deviceThree = new JavaParallelSample();
-		deviceThree.executeTest(capsHashtable);
+		deviceThree.executeTest(capsHashtable, "Thread 3");
 	}
 }
 class DeviceFour implements Runnable {
 	public void run() {
 		Hashtable<String, String> capsHashtable = new Hashtable<String, String>();
-		capsHashtable.put("browser", "Chrome");
-		capsHashtable.put("browser_version", "latest");
 		capsHashtable.put("os", "OS X");
-		capsHashtable.put("os_version", "Monterey");
-		capsHashtable.put("build", "BStack-[Java] Sample Build");
-		capsHashtable.put("name", "Thread 4");
 		JavaParallelSample deviceFour = new JavaParallelSample();
-		deviceFour.executeTest(capsHashtable);
+		deviceFour.executeTest(capsHashtable, "Thread 4");
   	}
 }
 class DeviceFive implements Runnable {
 	public void run() {
 		Hashtable<String, String> capsHashtable = new Hashtable<String, String>();
-		capsHashtable.put("browser", "Chrome");
-		capsHashtable.put("browser_version", "latest");
 		capsHashtable.put("os", "Windows");
-		capsHashtable.put("os_version", "10");
-		capsHashtable.put("build", "BStack-[Java] Sample Build");
-		capsHashtable.put("name", "Thread 5");
 		JavaParallelSample deviceFive = new JavaParallelSample();
-		deviceFive.executeTest(capsHashtable);
+		deviceFive.executeTest(capsHashtable, "thread 5");
   	}
 }
 public class JavaParallelSample {
-	public static final String USERNAME = "";
-	public static final String AUTOMATE_KEY = "";
+	public static final String USERNAME = "rutvikchandla_2MEern";
+	public static final String AUTOMATE_KEY = "AXHzyg34Qr81Nep231pu";
 	public static final String URL = "https://" + USERNAME + ":" + AUTOMATE_KEY + "@hub-cloud.browserstack.com/wd/hub";
 	public static void main(String[] args) throws Exception {
 		Thread threadOne = new Thread(new DeviceOne());
@@ -90,16 +70,11 @@ public class JavaParallelSample {
 		Thread threadFive = new Thread(new DeviceFive());
 		threadFive.start();
 		}
-	public void executeTest(Hashtable<String, String> capsHashtable) {
-		String key;
+	public void executeTest(Hashtable<String, String> capsHashtable, String sessionName) {
 		DesiredCapabilities caps = new DesiredCapabilities();
-		// Iterate over the hashtable and set the capabilities
-		Set<String> keys = capsHashtable.keySet();
-		Iterator<String> keysIterator = keys.iterator();
-		while (keysIterator.hasNext()) {
-			key = keysIterator.next();
-			caps.setCapability(key, capsHashtable.get(key));
-			}
+		caps.setCapability("bstack:options", capsHashtable);
+		caps.setCapability("sessionName", sessionName); // test name
+		caps.setCapability("buildName", "BStack-[Java] Sample buildName"); // CI/CD job or build name
 		WebDriver driver;
 		try {
 			driver = new RemoteWebDriver(new URL(URL), caps);
@@ -107,7 +82,7 @@ public class JavaParallelSample {
 			try {
 				// Searching for 'BrowserStack' on google.com
 				driver.get("https://bstackdemo.com/");
-				WebDriverWait wait = new WebDriverWait(driver, 10);
+				WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 				wait.until(ExpectedConditions.titleIs("StackDemo"));
 				// Getting name of the product
 				String product_name = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\'1\']/p"))).getText();

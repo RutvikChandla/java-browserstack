@@ -8,25 +8,31 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.JavascriptExecutor;
 import java.net.URL;
+import java.time.Duration;
+import java.util.HashMap;
+
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 public class JavaSample {
-  public static final String AUTOMATE_USERNAME = "";
-  public static final String AUTOMATE_ACCESS_KEY = "";
+  public static final String AUTOMATE_USERNAME = "rutvikchandla_2MEern";
+  public static final String AUTOMATE_ACCESS_KEY = "AXHzyg34Qr81Nep231pu";
 public static final String URL = "https://" + AUTOMATE_USERNAME + ":" + AUTOMATE_ACCESS_KEY + "@hub-cloud.browserstack.com/wd/hub";
 public static void main(String[] args) throws Exception {
- DesiredCapabilities caps = new DesiredCapabilities();
- caps.setCapability("browserName", "iPhone");
- caps.setCapability("device", "iPhone 11");
- caps.setCapability("realMobile", "true");
- caps.setCapability("local", "true");
- caps.setCapability("os_version", "14.0");
- caps.setCapability("name", "BStack-[Java] Sample Test"); // test name
- caps.setCapability("build", "BStack Build Number 1"); // CI/CD job or build name
- final WebDriver driver = new RemoteWebDriver(new URL(URL), caps);
+	DesiredCapabilities capabilities = new DesiredCapabilities();
+	capabilities.setCapability("browserName", "Chrome");
+	capabilities.setCapability("browserVersion", "latest");
+	HashMap<String, Object> browserstackOptions = new HashMap<String, Object>();
+	browserstackOptions.put("os", "OS X");
+	browserstackOptions.put("osVersion", "Sierra");
+	browserstackOptions.put("local", "false");
+	browserstackOptions.put("seleniumVersion", "4.0.0");
+	capabilities.setCapability("bstack:options", browserstackOptions);
+	capabilities.setCapability("sessionName", "BStack-[Java] Sample Test"); // test name
+	capabilities.setCapability("buildName", "BStack Build Number 1"); // CI/CD job or build name
+ final WebDriver driver = new RemoteWebDriver(new URL(URL), capabilities);
  try {
    driver.get("https://bstackdemo.com/");
-   final WebDriverWait wait = new WebDriverWait(driver, 10);
+   final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
    wait.until(ExpectedConditions.titleIs("StackDemo"));
    // getting name of the product
    String product_name = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\'1\']/p"))).getText();
